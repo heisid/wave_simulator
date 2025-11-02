@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <math.h>
 #include <raylib.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,7 @@ float *amplitudes;
 float *dAmplitudesOverDt;
 
 bool oscillatorOn = true;
-float oscillatorAmplitude = MAX_VAL;
+float oscillatorAmplitude = 0;
 float oscillatorPeriod = 0.5;
 float oscillatorTimer = 0;
 Vector2 oscillatorPos = {(float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2};
@@ -44,9 +45,9 @@ void inputHandler() {
   default:
     break;
   }
-  if (key == KEY_Q) {
-    CloseWindow();
-  }
+  oscillatorPeriod += 0.01 * GetMouseWheelMove();
+  if (oscillatorPeriod < 0)
+    oscillatorPeriod = 0.1;
 }
 
 void updateVelocityField() {
@@ -178,20 +179,17 @@ int main() {
     if (oscillatorOn) {
       oscillatorTimer += GetFrameTime();
       if (oscillatorTimer >= oscillatorPeriod) {
-        if (oscillatorAmplitude == MAX_VAL)
-          oscillatorAmplitude = MIN_VAL;
-        else
-          oscillatorAmplitude = MAX_VAL;
-        amplitudes[getFlatIndex(oscillatorPos.x / FIELD_RESOLUTION,
-                                oscillatorPos.y / FIELD_RESOLUTION)] =
-            oscillatorAmplitude;
-
-        oscillatorTimer = 0;
-      } else {
-        amplitudes[getFlatIndex(oscillatorPos.x / FIELD_RESOLUTION,
-                                oscillatorPos.y / FIELD_RESOLUTION)] =
-            oscillatorAmplitude;
+        // if (oscillatorAmplitude == MAX_VAL)
+        //   oscillatorAmplitude = MIN_VAL;
+        // else
+        //   oscillatorAmplitude = MAX_VAL;
+        oscillatorTimer = oscillatorTimer - oscillatorPeriod;
       }
+      oscillatorAmplitude =
+          MAX_VAL * sin(2 * 3.14 * oscillatorTimer / oscillatorPeriod);
+      amplitudes[getFlatIndex(oscillatorPos.x / FIELD_RESOLUTION,
+                              oscillatorPos.y / FIELD_RESOLUTION)] =
+          oscillatorAmplitude;
     }
     updateVelocityField();
     updateAmplitudes();
