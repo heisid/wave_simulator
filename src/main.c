@@ -19,20 +19,19 @@ Vector2 box0Location = {300, 0};
 float box0Width = 20;
 float box0Height = 300;
 
-Vector2 box1Location = {300, 350};
+Vector2 box1Location = {300, 340};
 float box1Width = 20;
-float box1Height = 50;
+float box1Height = 100;
 
-Vector2 box2Location = {300, 450};
+Vector2 box2Location = {300, 480};
 float box2Width = 20;
-float box2Height = 400;
+float box2Height = 380;
 
 bool oscillatorOn = true;
 float oscillatorAmplitude = 0;
-float oscillatorPeriod = 0.8;
+float oscillatorPeriod = 0.6;
 float oscillatorTimer = 0;
-Vector2 oscillatorPos = {((float)SCREEN_WIDTH / 2) + 100,
-                         (float)SCREEN_HEIGHT / 2};
+Vector2 oscillatorPos = {0, (float)SCREEN_HEIGHT / 2};
 
 int getFlatIndex(int colIndex, int rowIndex) {
   return (rowIndex * COLNUM) + colIndex;
@@ -212,7 +211,9 @@ int main() {
         oscillatorTimer = oscillatorTimer - oscillatorPeriod;
       }
       oscillatorAmplitude =
-          MAX_VAL * sin(2 * 3.14 * oscillatorTimer / oscillatorPeriod);
+          MAX_VAL * sin(2 * 3.14 * oscillatorTimer / oscillatorPeriod) +
+          MAX_VAL *
+              sin((2 * 3.14 * oscillatorTimer / oscillatorPeriod) - 0.1 * 3.14);
       amplitudes[getFlatIndex(oscillatorPos.x / FIELD_RESOLUTION,
                               oscillatorPos.y / FIELD_RESOLUTION)] =
           oscillatorAmplitude;
