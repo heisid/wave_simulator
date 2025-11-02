@@ -1,0 +1,4 @@
+.cache/
+.build/
+wave
+.compile_commands.json
