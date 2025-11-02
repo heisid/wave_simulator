@@ -14,11 +14,11 @@ const float MIN_VAL = -1000;
 float *amplitudes;
 float *dAmplitudesOverDt;
 
-bool oscillatorOn = false;
+bool oscillatorOn = true;
 float oscillatorAmplitude = MAX_VAL;
-float oscillatorPeriod = 1;
+float oscillatorPeriod = 0.5;
 float oscillatorTimer = 0;
-Vector2 oscillatorPos = {0, 0};
+Vector2 oscillatorPos = {(float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2};
 
 int getFlatIndex(int colIndex, int rowIndex) {
   return (rowIndex * COLNUM) + colIndex;
@@ -138,7 +138,7 @@ Color getColor(int col, int row) {
   if (normalizedVal >= 0) {
     r = (unsigned char)(255 * normalizedVal);
   } else {
-    b = (unsigned char)(255 * -normalizedVal);
+    g = (unsigned char)(255 * -normalizedVal);
   }
 
   return (Color){r, g, b, 255};
