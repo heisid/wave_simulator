@@ -9,17 +9,30 @@ const int SCREEN_HEIGHT = 800;
 const int FIELD_RESOLUTION = 5;
 const int COLNUM = SCREEN_WIDTH / FIELD_RESOLUTION;
 const int ROWNUM = SCREEN_HEIGHT / FIELD_RESOLUTION;
-const float MAX_VAL = 1000;
-const float MIN_VAL = -1000;
+const float MAX_VAL = 100;
+const float MIN_VAL = -100;
 
 float *amplitudes;
 float *dAmplitudesOverDt;
 
+Vector2 box0Location = {300, 0};
+float box0Width = 20;
+float box0Height = 300;
+
+Vector2 box1Location = {300, 350};
+float box1Width = 20;
+float box1Height = 50;
+
+Vector2 box2Location = {300, 450};
+float box2Width = 20;
+float box2Height = 400;
+
 bool oscillatorOn = true;
 float oscillatorAmplitude = 0;
-float oscillatorPeriod = 0.5;
+float oscillatorPeriod = 0.8;
 float oscillatorTimer = 0;
-Vector2 oscillatorPos = {(float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2};
+Vector2 oscillatorPos = {((float)SCREEN_WIDTH / 2) + 100,
+                         (float)SCREEN_HEIGHT / 2};
 
 int getFlatIndex(int colIndex, int rowIndex) {
   return (rowIndex * COLNUM) + colIndex;
@@ -50,6 +63,15 @@ void inputHandler() {
     oscillatorPeriod = 0.1;
 }
 
+bool isInTheBox(int x, int y) {
+  return (x >= box0Location.x && x <= box0Location.x + box0Width &&
+          y >= box0Location.y && y <= box0Location.y + box0Height) ||
+         (x >= box1Location.x && x <= box1Location.x + box1Width &&
+          y >= box1Location.y && y <= box1Location.y + box1Height) ||
+         (x >= box2Location.x && x <= box2Location.x + box2Width &&
+          y >= box2Location.y && y <= box2Location.y + box2Height);
+}
+
 void updateVelocityField() {
   float currentAmplitudes[COLNUM * ROWNUM];
   float force[COLNUM * ROWNUM];
@@ -61,6 +83,10 @@ void updateVelocityField() {
   memcpy(currentAmplitudes, amplitudes, sizeof(currentAmplitudes));
   for (int row = 0; row < ROWNUM; row++) {
     for (int col = 0; col < COLNUM; col++) {
+      if (isInTheBox(col * FIELD_RESOLUTION, row * FIELD_RESOLUTION)) {
+        force[getFlatIndex(col, row)] = 0;
+        continue;
+      }
       float currentCellAmplitude = currentAmplitudes[getFlatIndex(col, row)];
       // float n = row <= 0 ? 0 : currentAmplitudes[getFlatIndex(col, row - 1)];
       float n = row <= 0 ? currentCellAmplitude
@@ -205,6 +231,9 @@ int main() {
         DrawRectangle(x, y, FIELD_RESOLUTION, FIELD_RESOLUTION, color);
       }
     }
+    DrawRectangle(box0Location.x, box0Location.y, box0Width, box0Height, WHITE);
+    DrawRectangle(box1Location.x, box1Location.y, box1Width, box1Height, WHITE);
+    DrawRectangle(box2Location.x, box2Location.y, box2Width, box2Height, WHITE);
 
     EndDrawing();
   }
