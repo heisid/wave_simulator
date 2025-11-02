@@ -1,4 +1,4 @@
 .cache/
-.build/
+build/
 wave
 compile_commands.json
