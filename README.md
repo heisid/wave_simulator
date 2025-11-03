@@ -8,7 +8,7 @@ double slit experiment at home:
 
 ===============
 
-o: toggle oscillator. if you turn off the oscillator and turn it on again, the oscillator will show up wherever the mouse cursor is.
+o: toggle oscillator. ~if you turn off the oscillator and turn it on again, the oscillator will show up wherever the mouse cursor is.~
 
 mouse scroll up/down: change oscillator period/frequency
 
