@@ -82,7 +82,12 @@ void updateVelocityField() {
   for (int i = 0; i < COLNUM * ROWNUM; i++) {
     force[i] = 0;
   }
-  float constantA = -1;
+  // Further reading for me
+  // Courant–Friedrichs–Lewy condition
+  // something about partial differential equation stability and shit
+  // Playing around with this sometimes makes the amplitudes blows up to
+  // infinity
+  float cSquared = -100;
 
   memcpy(currentAmplitudes, amplitudes, sizeof(currentAmplitudes));
   for (int row = 0; row < ROWNUM; row++) {
@@ -96,14 +101,14 @@ void updateVelocityField() {
       // float n = row <= 0 ? 0 : currentAmplitudes[getFlatIndex(col, row - 1)];
       float n = row <= 0 ? currentCellAmplitude
                          : currentAmplitudes[getFlatIndex(col, row - 1)];
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - n);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - n);
 
       // float ne = 0;
       float ne = currentCellAmplitude;
       if (col < COLNUM - 1 && row > 0) {
         ne = currentAmplitudes[getFlatIndex(col + 1, row - 1)];
       }
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - ne);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - ne);
 
       // float e =
       //     col >= COLNUM - 1 ? 0 : currentAmplitudes[getFlatIndex(col + 1,
@@ -111,14 +116,14 @@ void updateVelocityField() {
       float e = col >= COLNUM - 1
                     ? currentCellAmplitude
                     : currentAmplitudes[getFlatIndex(col + 1, row)];
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - e);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - e);
 
       // float se = 0;
       float se = currentCellAmplitude;
       if (col < COLNUM - 1 && row < ROWNUM - 1) {
         se = currentAmplitudes[getFlatIndex(col + 1, row + 1)];
       }
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - se);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - se);
 
       // float s =
       //     row >= ROWNUM - 1 ? 0 : currentAmplitudes[getFlatIndex(col, row +
@@ -126,26 +131,26 @@ void updateVelocityField() {
       float s = row >= ROWNUM - 1
                     ? currentCellAmplitude
                     : currentAmplitudes[getFlatIndex(col, row + 1)];
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - s);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - s);
 
       // float sw = 0;
       float sw = currentCellAmplitude;
       if (col > 0 && row < ROWNUM - 1) {
         sw = currentAmplitudes[getFlatIndex(col - 1, row + 1)];
       }
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - sw);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - sw);
 
       // float w = col <= 0 ? 0 : currentAmplitudes[getFlatIndex(col - 1, row)];
       float w = col <= 0 ? currentCellAmplitude
                          : currentAmplitudes[getFlatIndex(col - 1, row)];
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - w);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - w);
 
       // float nw = 0;
       float nw = currentCellAmplitude;
       if (col > 0 && row > 0) {
         nw = currentAmplitudes[getFlatIndex(col - 1, row - 1)];
       }
-      force[getFlatIndex(col, row)] += constantA * (currentCellAmplitude - nw);
+      force[getFlatIndex(col, row)] += cSquared * (currentCellAmplitude - nw);
     }
   }
 
@@ -177,9 +182,8 @@ Color getColor(int col, int row) {
 }
 
 void updateAmplitudes() {
-  float constantB = 200;
   for (int i = 0; i < COLNUM * ROWNUM; i++) {
-    amplitudes[i] += constantB * dAmplitudesOverDt[i] * GetFrameTime();
+    amplitudes[i] += dAmplitudesOverDt[i] * GetFrameTime();
   }
 }
 int main() {
