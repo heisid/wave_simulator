@@ -27,6 +27,8 @@ Vector2 box2Location = {300, 480};
 float box2Width = 20;
 float box2Height = 380;
 
+bool wallOn = true;
+
 bool oscillatorOn = true;
 float oscillatorAmplitude = 0;
 float oscillatorPeriod = 0.6;
@@ -53,6 +55,9 @@ void inputHandler() {
     oscillatorOn = !oscillatorOn;
     if (oscillatorOn)
       oscillatorPos = GetMousePosition();
+    break;
+  case KEY_W:
+    wallOn = !wallOn;
     break;
   default:
     break;
@@ -82,7 +87,8 @@ void updateVelocityField() {
   memcpy(currentAmplitudes, amplitudes, sizeof(currentAmplitudes));
   for (int row = 0; row < ROWNUM; row++) {
     for (int col = 0; col < COLNUM; col++) {
-      if (isInTheBox(col * FIELD_RESOLUTION, row * FIELD_RESOLUTION)) {
+      if (wallOn &&
+          isInTheBox(col * FIELD_RESOLUTION, row * FIELD_RESOLUTION)) {
         force[getFlatIndex(col, row)] = 0;
         continue;
       }
@@ -143,7 +149,7 @@ void updateVelocityField() {
     }
   }
 
-  float damping = 0.995;
+  float damping = 0.9995;
   for (int i = 0; i < COLNUM * ROWNUM; i++) {
     dAmplitudesOverDt[i] += force[i] * GetFrameTime();
     dAmplitudesOverDt[i] *= damping;
@@ -232,9 +238,14 @@ int main() {
         DrawRectangle(x, y, FIELD_RESOLUTION, FIELD_RESOLUTION, color);
       }
     }
-    DrawRectangle(box0Location.x, box0Location.y, box0Width, box0Height, WHITE);
-    DrawRectangle(box1Location.x, box1Location.y, box1Width, box1Height, WHITE);
-    DrawRectangle(box2Location.x, box2Location.y, box2Width, box2Height, WHITE);
+    if (wallOn) {
+      DrawRectangle(box0Location.x, box0Location.y, box0Width, box0Height,
+                    WHITE);
+      DrawRectangle(box1Location.x, box1Location.y, box1Width, box1Height,
+                    WHITE);
+      DrawRectangle(box2Location.x, box2Location.y, box2Width, box2Height,
+                    WHITE);
+    }
 
     EndDrawing();
   }
