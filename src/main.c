@@ -149,7 +149,7 @@ void updateVelocityField() {
     }
   }
 
-  float damping = 0.9995;
+  float damping = 0.995;
   for (int i = 0; i < COLNUM * ROWNUM; i++) {
     dAmplitudesOverDt[i] += force[i] * GetFrameTime();
     dAmplitudesOverDt[i] *= damping;

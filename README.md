@@ -15,3 +15,5 @@ mouse scroll up/down: change oscillator period/frequency
 r: reset state
 
 click anywhere to create ripple
+
+w: toggle walls
