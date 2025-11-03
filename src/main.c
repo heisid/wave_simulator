@@ -27,7 +27,7 @@ Vector2 box2Location = {300, 480};
 float box2Width = 20;
 float box2Height = 380;
 
-bool wallOn = true;
+bool wallOn = false;
 
 bool oscillatorOn = true;
 float oscillatorAmplitude = 0;
@@ -87,7 +87,8 @@ void updateVelocityField() {
   // something about partial differential equation stability and shit
   // Playing around with this sometimes makes the amplitudes blows up to
   // infinity
-  float cSquared = -100;
+  float cSquaredMedium0 = -100;
+  float cSquaredMedium1 = -30;
 
   memcpy(currentAmplitudes, amplitudes, sizeof(currentAmplitudes));
   for (int row = 0; row < ROWNUM; row++) {
@@ -96,6 +97,10 @@ void updateVelocityField() {
           isInTheBox(col * FIELD_RESOLUTION, row * FIELD_RESOLUTION)) {
         force[getFlatIndex(col, row)] = 0;
         continue;
+      }
+      float cSquared = cSquaredMedium0;
+      if (row * FIELD_RESOLUTION <= 200) {
+        cSquared = cSquaredMedium1;
       }
       float currentCellAmplitude = currentAmplitudes[getFlatIndex(col, row)];
       // float n = row <= 0 ? 0 : currentAmplitudes[getFlatIndex(col, row - 1)];
@@ -254,6 +259,7 @@ int main() {
       DrawRectangle(box2Location.x, box2Location.y, box2Width, box2Height,
                     WHITE);
     }
+    DrawLine(0, 200, SCREEN_WIDTH, 200, WHITE);
 
     EndDrawing();
   }
