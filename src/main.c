@@ -154,7 +154,7 @@ void updateVelocityField() {
     }
   }
 
-  float damping = 0.995;
+  float damping = 0.95;
   for (int i = 0; i < COLNUM * ROWNUM; i++) {
     dAmplitudesOverDt[i] += force[i] * GetFrameTime();
     dAmplitudesOverDt[i] *= damping;
@@ -167,6 +167,10 @@ Color getColor(int col, int row) {
   val = val < MIN_VAL ? MIN_VAL : val;
 
   float normalizedVal = val / MAX_VAL;
+  // gamma correction, i can't see shit in far away areas
+  float gamma = 0.5; // < 1 brightens dim areas, > 1 darkens bright areas
+  float sign = normalizedVal >= 0 ? 1.0f : -1.0f;
+  normalizedVal = sign * powf(fabs(normalizedVal), gamma);
 
   unsigned char r = 0;
   unsigned char g = 0;
