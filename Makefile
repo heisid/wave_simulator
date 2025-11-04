@@ -58,18 +58,18 @@ deps: $(RAYLIB_DIR)/src/libraylib.a $(RAYGUI_DIR)/src/raygui.h
 # --- raylib ---
 $(RAYLIB_DIR)/src/libraylib.a:
 	@echo "==> Building raylib..."
-	@$(MKDIR) $(TPDIR)
-	test -d $(RAYLIB_DIR) || git submodule add https://github.com/raysan5/raylib.git $(RAYLIB_DIR)
-	git -C $(RAYLIB_DIR) fetch --tags --quiet || true
-	git -C $(RAYLIB_DIR) checkout $(RAYLIB_TAG)
+	# @$(MKDIR) $(TPDIR)
+	# test -d $(RAYLIB_DIR) || git submodule add https://github.com/raysan5/raylib.git $(RAYLIB_DIR)
+	# git -C $(RAYLIB_DIR) fetch --tags --quiet || true
+	# git -C $(RAYLIB_DIR) checkout $(RAYLIB_TAG)
 	$(MAKE) -C $(RAYLIB_DIR)/src PLATFORM=PLATFORM_DESKTOP
 
 # --- raygui ---
 $(RAYGUI_DIR)/src/raygui.h:
 	@echo "==> Cloning raygui.."
-	@$(MKDIR) $(TPDIR)
-	test -d $(RAYGUI_DIR) || git submodule add https://github.com/raysan5/raygui.git $(RAYGUI_DIR)
-	git -C $(RAYGUI_DIR) || fetch --tags --quiet || true
+	# @$(MKDIR) $(TPDIR)
+	# test -d $(RAYGUI_DIR) || git submodule add https://github.com/raysan5/raygui.git $(RAYGUI_DIR)
+	# git -C $(RAYGUI_DIR) || fetch --tags --quiet || true
 	git -C $(RAYGUI_DIR) checkout $(RAYGUI_TAG)
 
 
